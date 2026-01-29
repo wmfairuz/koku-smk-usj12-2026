@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jadual Kokurikulum SMK USJ 12 - 2026</title>
+<style>
+  :root {
+    --primary: #6a1b9a;
+    --primary-light: #e1bee7;
+    --bg: #fafafa;
+    --card-bg: #fff;
+    --text: #212121;
+    --text-secondary: #666;
+    --border: #e0e0e0;
+    --neptune: #1565c0;
+    --mars: #c62828;
+    --saturn: #f9a825;
+    --jupiter: #2e7d32;
+    --badge-kelab: #7b1fa2;
+    --badge-permainan: #0277bd;
+    --badge-uniform: #4e342e;
+    --badge-sukan: #e65100;
+    --badge-program: #00695c;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.5;
+    padding-bottom: 2rem;
+  }
+  header {
+    background: linear-gradient(135deg, #6a1b9a, #8e24aa);
+    color: #fff;
+    padding: 1.5rem 1rem;
+    text-align: center;
+  }
+  header h1 { font-size: 1.3rem; margin-bottom: .25rem; }
+  header p { font-size: .85rem; opacity: .9; }
+  .container { max-width: 700px; margin: 0 auto; padding: 0 1rem; }
+
+  /* Selection Panel */
+  .selection-panel {
+    background: var(--card-bg);
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.08);
+    margin: 1rem 0;
+    padding: 1rem 1.25rem;
+  }
+  .selection-panel h2 {
+    font-size: 1rem;
+    margin-bottom: .75rem;
+    color: var(--primary);
+  }
+  .form-group { margin-bottom: 1rem; }
+  .form-group:last-child { margin-bottom: 0; }
+  .form-group label {
+    display: block;
+    font-weight: 600;
+    font-size: .85rem;
+    margin-bottom: .35rem;
+    color: var(--text-secondary);
+  }
+  .form-group select {
+    width: 100%;
+    padding: .6rem .75rem;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    font-size: .95rem;
+    background: #fff;
+    color: var(--text);
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23666' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right .75rem center;
+  }
+  .form-group select:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(106,27,154,.15);
+  }
+
+  /* Info box */
+  .info-box {
+    background: #f3e5f5;
+    border-radius: 8px;
+    padding: .75rem 1rem;
+    font-size: .82rem;
+    color: #4a148c;
+    margin-bottom: 1rem;
+    line-height: 1.6;
+  }
+  .info-box strong { display: block; margin-bottom: .25rem; }
+
+  /* View Toggle */
+  .view-toggle {
+    display: flex;
+    gap: .5rem;
+    margin: 1rem 0;
+  }
+  .view-toggle button {
+    flex: 1;
+    padding: .55rem;
+    border: 1.5px solid var(--primary);
+    background: #fff;
+    color: var(--primary);
+    border-radius: 8px;
+    font-size: .85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all .15s;
+  }
+  .view-toggle button.active {
+    background: var(--primary);
+    color: #fff;
+  }
+
+  /* Month navigation */
+  .month-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--card-bg);
+    border-radius: 10px;
+    padding: .6rem 1rem;
+    margin-bottom: .75rem;
+    box-shadow: 0 1px 4px rgba(0,0,0,.06);
+  }
+  .month-nav button {
+    background: none;
+    border: none;
+    font-size: 1.3rem;
+    cursor: pointer;
+    color: var(--primary);
+    padding: .25rem .5rem;
+    border-radius: 6px;
+  }
+  .month-nav button:hover { background: var(--primary-light); }
+  .month-nav button:disabled { opacity: .3; cursor: default; }
+  .month-nav span { font-weight: 700; font-size: 1rem; }
+
+  /* Calendar grid */
+  .calendar { margin-bottom: 1rem; }
+  .cal-header {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    text-align: center;
+    font-size: .75rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+    margin-bottom: .25rem;
+  }
+  .cal-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 2px;
+  }
+  .cal-day {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding-top: 4px;
+    border-radius: 8px;
+    font-size: .85rem;
+    position: relative;
+    min-height: 70px;
+    overflow: hidden;
+  }
+  .cal-day.empty { background: transparent; }
+  .cal-day.has-event {
+    background: #f3e5f5;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .cal-day.has-event:hover { background: #e1bee7; }
+  .cal-day.today {
+    outline: 2px solid var(--primary);
+    outline-offset: -2px;
+  }
+  .cal-day .dots {
+    display: flex;
+    gap: 2px;
+    margin-top: 1px;
+  }
+  .cal-day .dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+  }
+  .cal-day .cal-labels {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1px;
+    margin-top: 2px;
+    width: 100%;
+  }
+  .cal-day .cal-label {
+    font-size: .5rem;
+    font-weight: 600;
+    line-height: 1.1;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 95%;
+    padding: 0 1px;
+    border-radius: 2px;
+  }
+  .cal-label-sukan { color: var(--badge-sukan); }
+  .cal-label-uniform { color: var(--badge-uniform); }
+  .cal-label-kelab { color: var(--badge-kelab); }
+  .cal-label-permainan { color: var(--badge-permainan); }
+  .cal-label-program { color: var(--badge-program); }
+  .dot-kelab { background: var(--badge-kelab); }
+  .dot-permainan { background: var(--badge-permainan); }
+  .dot-uniform { background: var(--badge-uniform); }
+  .dot-sukan { background: var(--badge-sukan); }
+  .dot-program { background: var(--badge-program); }
+
+  /* Event list */
+  .event-list { list-style: none; }
+  .event-item {
+    background: var(--card-bg);
+    border-radius: 10px;
+    padding: .75rem 1rem;
+    margin-bottom: .5rem;
+    box-shadow: 0 1px 4px rgba(0,0,0,.06);
+    display: flex;
+    gap: .75rem;
+    align-items: flex-start;
+  }
+  .event-date-box {
+    min-width: 48px;
+    text-align: center;
+    flex-shrink: 0;
+  }
+  .event-date-box .day-num { font-size: 1.4rem; font-weight: 800; color: var(--primary); }
+  .event-date-box .day-name { font-size: .7rem; color: var(--text-secondary); text-transform: uppercase; }
+  .event-details { flex: 1; }
+  .event-details .event-title { font-weight: 600; font-size: .9rem; }
+  .event-details .event-time { font-size: .78rem; color: var(--text-secondary); }
+  .badge {
+    display: inline-block;
+    font-size: .65rem;
+    font-weight: 700;
+    padding: .15rem .5rem;
+    border-radius: 4px;
+    color: #fff;
+    margin-top: .25rem;
+    text-transform: uppercase;
+  }
+  .badge-kelab { background: var(--badge-kelab); }
+  .badge-permainan { background: var(--badge-permainan); }
+  .badge-uniform { background: var(--badge-uniform); }
+  .badge-sukan { background: var(--badge-sukan); }
+  .badge-program { background: var(--badge-program); }
+  .selected-name {
+    display: block;
+    font-size: .78rem;
+    font-weight: 600;
+    color: var(--primary);
+    margin-top: .2rem;
+  }
+
+  .no-events {
+    text-align: center;
+    padding: 2rem 1rem;
+    color: var(--text-secondary);
+    font-size: .9rem;
+  }
+
+  /* Legend */
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5rem;
+    margin-bottom: 1rem;
+    font-size: .75rem;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: .3rem;
+  }
+  .legend-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+  }
+
+  .footer {
+    text-align: center;
+    font-size: .75rem;
+    color: var(--text-secondary);
+    margin-top: 2rem;
+    padding: 0 1rem;
+  }
+
+  /* Tooltip / modal for calendar day */
+  .day-modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.4);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+  }
+  .day-modal-overlay.show { display: flex; }
+  .day-modal {
+    background: #fff;
+    border-radius: 14px;
+    padding: 1.25rem;
+    max-width: 340px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+  }
+  .day-modal h3 { font-size: 1rem; margin-bottom: .75rem; color: var(--primary); }
+  .day-modal .event-item { box-shadow: none; background: #f5f5f5; }
+  .day-modal .close-btn {
+    display: block;
+    width: 100%;
+    margin-top: .75rem;
+    padding: .6rem;
+    border: none;
+    background: var(--primary);
+    color: #fff;
+    border-radius: 8px;
+    font-size: .9rem;
+    cursor: pointer;
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>Jadual Kokurikulum SMK USJ 12</h1>
+  <p>Sesi Petang Tahun 2026</p>
+</header>
+
+<div class="container">
+  <div class="selection-panel">
+    <h2>Pilih Aktiviti Anak Anda</h2>
+    <div class="form-group">
+      <label>Rumah Sukan</label>
+      <select id="sel-sukan">
+        <option value="">-- Pilih Rumah Sukan --</option>
+        <option value="neptune">Neptune (Biru)</option>
+        <option value="mars">Mars (Merah)</option>
+        <option value="saturn">Saturn (Kuning)</option>
+        <option value="jupiter">Jupiter (Hijau)</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Badan Beruniform</label>
+      <select id="sel-uniform">
+        <option value="">-- Pilih Badan Beruniform --</option>
+        <optgroup label="Kumpulan A (Rabu)">
+          <option value="kadet-polis">Kadet Polis</option>
+          <option value="kadet-bomba">Kadet Bomba</option>
+          <option value="krs">Kadet Remaja Sekolah (KRS)</option>
+          <option value="bsmm">BSMM</option>
+          <option value="pandu-puteri">Pandu Puteri</option>
+        </optgroup>
+        <optgroup label="Kumpulan B (Sabtu)">
+          <option value="pengakap">Pengakap</option>
+        </optgroup>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Kelab Persatuan</label>
+      <select id="sel-kelab">
+        <option value="">-- Pilih Kelab Persatuan --</option>
+        <optgroup label="Kumpulan A (Selasa)">
+          <option value="bahasa-melayu">Bahasa Melayu</option>
+          <option value="bahasa-inggeris">Bahasa Inggeris</option>
+          <option value="seni-visual">Seni Visual</option>
+          <option value="stem">STEM</option>
+        </optgroup>
+        <optgroup label="Kumpulan B (Khamis)">
+          <option value="rekacipta">Rekacipta & Inovasi</option>
+          <option value="kebudayaan">Kebudayaan</option>
+          <option value="usahawan-muda">Usahawan Muda</option>
+          <option value="fotografi">Fotografi</option>
+          <option value="kerjaya-prs">Kerjaya / PRS</option>
+        </optgroup>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Kelab Permainan (Sukan & Permainan)</label>
+      <select id="sel-permainan">
+        <option value="">-- Pilih Kelab Permainan --</option>
+        <optgroup label="Kumpulan A (Selasa)">
+          <option value="bola-sepak">Bola Sepak</option>
+          <option value="bola-keranjang">Bola Keranjang</option>
+          <option value="catur">Catur</option>
+          <option value="bola-baling">Bola Baling</option>
+        </optgroup>
+        <optgroup label="Kumpulan B (Khamis)">
+          <option value="bola-jaring">Bola Jaring</option>
+          <option value="olahraga">Olahraga</option>
+          <option value="bola-tampar">Bola Tampar</option>
+          <option value="badminton">Badminton</option>
+          <option value="ping-pong">Ping Pong</option>
+        </optgroup>
+      </select>
+    </div>
+  </div>
+
+  <div class="info-box" id="info-box" style="display:none;"></div>
+
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot" style="background:var(--badge-sukan)"></div> Rumah Sukan</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--badge-uniform)"></div> Beruniform</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--badge-kelab)"></div> Kelab Persatuan</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--badge-permainan)"></div> Permainan</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--badge-program)"></div> Program</div>
+  </div>
+
+  <div class="view-toggle">
+    <button id="btn-calendar" class="active" onclick="setView('calendar')">Kalendar</button>
+    <button id="btn-list" onclick="setView('list')">Senarai</button>
+  </div>
+
+  <div id="calendar-view">
+    <div class="month-nav">
+      <button id="prev-month" onclick="changeMonth(-1)">&larr;</button>
+      <span id="month-label"></span>
+      <button id="next-month" onclick="changeMonth(1)">&rarr;</button>
+    </div>
+    <div class="calendar">
+      <div class="cal-header">
+        <div>Isn</div><div>Sel</div><div>Rab</div><div>Kha</div><div>Jum</div><div>Sab</div><div>Ahd</div>
+      </div>
+      <div class="cal-grid" id="cal-grid"></div>
+    </div>
+  </div>
+
+  <div id="list-view" style="display:none;">
+    <div class="month-nav">
+      <button id="prev-month-list" onclick="changeMonth(-1)">&larr;</button>
+      <span id="month-label-list"></span>
+      <button id="next-month-list" onclick="changeMonth(1)">&rarr;</button>
+    </div>
+    <ul class="event-list" id="event-list"></ul>
+  </div>
+
+  <div class="footer">
+    <p>** Tertakluk kepada pindaan dan arahan semasa</p>
+    <p>Data daripada Takwim Unit Kokurikulum SMK USJ 12 Tahun 2026</p>
+  </div>
+</div>
+
+<!-- Day detail modal -->
+<div class="day-modal-overlay" id="day-modal-overlay" onclick="closeModal(event)">
+  <div class="day-modal" id="day-modal">
+    <h3 id="modal-title"></h3>
+    <div id="modal-events"></div>
+    <button class="close-btn" onclick="document.getElementById('day-modal-overlay').classList.remove('show')">Tutup</button>
+  </div>
+</div>
+
+<script>
+// =========== DATA ===========
+const MONTH_NAMES = ['Januari','Februari','Mac','April','Mei','Jun','Julai','Ogos','September','Oktober','November','Disember'];
+const DAY_NAMES = ['Ahad','Isnin','Selasa','Rabu','Khamis','Jumaat','Sabtu'];
+
+// Kumpulan mapping
+const kelabKumpA = ['bahasa-melayu','bahasa-inggeris','seni-visual','stem'];
+const kelabKumpB = ['rekacipta','kebudayaan','usahawan-muda','fotografi','kerjaya-prs'];
+const permainanKumpA = ['bola-sepak','bola-keranjang','catur','bola-baling'];
+const permainanKumpB = ['bola-jaring','olahraga','bola-tampar','badminton','ping-pong'];
+const uniformKumpA = ['kadet-polis','kadet-bomba','krs','bsmm','pandu-puteri'];
+const uniformKumpB = ['pengakap'];
+const sukanKumpA = ['neptune','mars'];
+const sukanKumpB = ['saturn','jupiter'];
+
+// Helper: d(day,month) => date string key "YYYY-MM-DD"
+function d(day, month, year=2026) {
+  return `${year}-${String(month).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+}
+
+// All events as array of { date, title, type, kumpulan, category }
+// type: 'kelab' | 'permainan' | 'uniform' | 'sukan' | 'program'
+// category: which group filter applies
+
+const allEvents = [
+  // ===== LATIHAN RUMAH SUKAN =====
+  { date: d(19,1), title: 'Latihan Rumah Sukan Neptune & Mars (1)', type:'sukan', group:'A', time:'7.45 - 9.15 pagi' },
+  { date: d(20,1), title: 'Latihan Rumah Sukan Saturn & Jupiter (1)', type:'sukan', group:'B', time:'7.45 - 9.15 pagi' },
+  { date: d(21,1), title: 'Latihan Rumah Sukan Neptune & Mars (2)', type:'sukan', group:'A', time:'7.45 - 9.15 pagi' },
+  { date: d(22,1), title: 'Latihan Rumah Sukan Saturn & Jupiter (2)', type:'sukan', group:'B', time:'7.45 - 9.15 pagi' },
+  { date: d(9,2), title: 'Latihan Rumah Sukan Neptune & Mars (3)', type:'sukan', group:'A', time:'7.45 - 9.15 pagi' },
+  { date: d(10,2), title: 'Latihan Rumah Sukan Saturn & Jupiter (3)', type:'sukan', group:'B', time:'7.45 - 9.15 pagi' },
+  { date: d(11,2), title: 'Latihan Rumah Sukan Neptune & Mars (4)', type:'sukan', group:'A', time:'7.45 - 9.15 pagi' },
+  { date: d(12,2), title: 'Latihan Rumah Sukan Saturn & Jupiter (4)', type:'sukan', group:'B', time:'7.45 - 9.15 pagi' },
+
+  // ===== KELAB PERSATUAN =====
+  { date: d(27,1), title: 'Perjumpaan Kelab Persatuan Kumpulan A (1)', type:'kelab', group:'A', time:'7.45 - 9.45 pagi' },
+  { date: d(29,1), title: 'Perjumpaan Kelab Persatuan Kumpulan B (1)', type:'kelab', group:'B', time:'7.45 - 9.45 pagi' },
+  { date: d(9,6), title: 'Perjumpaan Kelab Persatuan Kumpulan A (2)', type:'kelab', group:'A', time:'7.45 - 9.45 pagi' },
+  { date: d(11,6), title: 'Perjumpaan Kelab Persatuan Kumpulan B (2)', type:'kelab', group:'B', time:'7.45 - 9.45 pagi' },
+  { date: d(23,6), title: 'Perjumpaan Kelab Persatuan Kumpulan A (3)', type:'kelab', group:'A', time:'7.45 - 9.45 pagi' },
+  { date: d(25,6), title: 'Perjumpaan Kelab Persatuan Kumpulan B (3)', type:'kelab', group:'B', time:'7.45 - 9.45 pagi' },
+  { date: d(7,7), title: 'Perjumpaan Kelab Persatuan Kumpulan A (4)', type:'kelab', group:'A', time:'7.45 - 9.45 pagi' },
+  { date: d(9,7), title: 'Perjumpaan Kelab Persatuan Kumpulan B (4)', type:'kelab', group:'B', time:'7.45 - 9.45 pagi' },
+  { date: d(21,7), title: 'Perjumpaan Kelab Persatuan Kumpulan A (5)', type:'kelab', group:'A', time:'7.45 - 9.45 pagi' },
+  { date: d(23,7), title: 'Perjumpaan Kelab Persatuan Kumpulan B (5)', type:'kelab', group:'B', time:'7.45 - 9.45 pagi' },
+  { date: d(4,8), title: 'Perjumpaan Kelab Persatuan Kumpulan A (6)', type:'kelab', group:'A', time:'7.45 - 9.45 pagi' },
+  { date: d(6,8), title: 'Perjumpaan Kelab Persatuan Kumpulan B (6)', type:'kelab', group:'B', time:'7.45 - 9.45 pagi' },
+  { date: d(18,8), title: 'Perjumpaan Kelab Persatuan Kumpulan A (7)', type:'kelab', group:'A', time:'7.45 - 9.45 pagi' },
+  { date: d(20,8), title: 'Perjumpaan Kelab Persatuan Kumpulan B (7)', type:'kelab', group:'B', time:'7.45 - 9.45 pagi' },
+  { date: d(8,9), title: 'Perjumpaan Kelab Persatuan Kumpulan A (8)', type:'kelab', group:'A', time:'7.45 - 9.45 pagi' },
+  { date: d(10,9), title: 'Perjumpaan Kelab Persatuan Kumpulan B (8)', type:'kelab', group:'B', time:'7.45 - 9.45 pagi' },
+  { date: d(15,9), title: 'Perjumpaan Kelab Persatuan Kumpulan A (9)', type:'kelab', group:'A', time:'7.45 - 9.45 pagi' },
+  { date: d(17,9), title: 'Perjumpaan Kelab Persatuan Kumpulan B (9)', type:'kelab', group:'B', time:'7.45 - 9.45 pagi' },
+  { date: d(22,9), title: 'Perjumpaan Kelab Persatuan Kumpulan A (10)', type:'kelab', group:'A', time:'7.45 - 9.45 pagi' },
+  { date: d(24,9), title: 'Perjumpaan Kelab Persatuan Kumpulan B (10)', type:'kelab', group:'B', time:'7.45 - 9.45 pagi' },
+  { date: d(29,9), title: 'Perjumpaan Kelab Persatuan Kumpulan A (11)', type:'kelab', group:'A', time:'7.45 - 9.45 pagi' },
+  { date: d(1,10), title: 'Perjumpaan Kelab Persatuan Kumpulan B (11)', type:'kelab', group:'B', time:'7.45 - 9.45 pagi' },
+  { date: d(6,10), title: 'Perjumpaan Kelab Persatuan Kumpulan A (12)', type:'kelab', group:'A', time:'7.45 - 9.45 pagi' },
+  { date: d(8,10), title: 'Perjumpaan Kelab Persatuan Kumpulan B (12)', type:'kelab', group:'B', time:'7.45 - 9.45 pagi' },
+
+  // ===== BADAN BERUNIFORM =====
+  { date: d(28,1), title: 'Perjumpaan Badan Beruniform Kumpulan A (1)', type:'uniform', group:'A', time:'7.45 - 9.45 pagi' },
+  { date: d(4,2), title: 'Perjumpaan Badan Beruniform Kumpulan A (2)', type:'uniform', group:'A', time:'7.45 - 9.45 pagi' },
+  { date: d(11,4), title: 'Perjumpaan Badan Beruniform Kumpulan B (1 & 2)', type:'uniform', group:'B', time:'7.30 pagi - 12.00 t/hari' },
+  { date: d(10,6), title: 'Perjumpaan Badan Beruniform Kumpulan A (3)', type:'uniform', group:'A', time:'7.45 - 9.45 pagi' },
+  { date: d(13,6), title: 'Perjumpaan Badan Beruniform Kumpulan B (3 & 4)', type:'uniform', group:'B', time:'7.30 pagi - 12.00 t/hari' },
+  { date: d(24,6), title: 'Perjumpaan Badan Beruniform Kumpulan A (4)', type:'uniform', group:'A', time:'7.45 - 9.45 pagi' },
+  { date: d(1,7), title: 'Perjumpaan Badan Beruniform Kumpulan A (5)', type:'uniform', group:'A', time:'7.45 - 9.45 pagi' },
+  { date: d(8,7), title: 'Perjumpaan Badan Beruniform Kumpulan A (6)', type:'uniform', group:'A', time:'7.45 - 9.45 pagi' },
+  { date: d(11,7), title: 'Perjumpaan Badan Beruniform Kumpulan B (5 & 6)', type:'uniform', group:'B', time:'7.30 pagi - 12.00 t/hari' },
+  { date: d(15,7), title: 'Perjumpaan Badan Beruniform Kumpulan A (7)', type:'uniform', group:'A', time:'7.45 - 9.45 pagi' },
+  { date: d(22,7), title: 'Perjumpaan Badan Beruniform Kumpulan A (8)', type:'uniform', group:'A', time:'7.45 - 9.45 pagi' },
+  { date: d(25,7), title: 'Perjumpaan Badan Beruniform Kumpulan B (9 & 10)', type:'uniform', group:'B', time:'7.30 pagi - 12.00 t/hari' },
+  { date: d(29,7), title: 'Perjumpaan Badan Beruniform Kumpulan A (9)', type:'uniform', group:'A', time:'7.45 - 9.45 pagi' },
+  { date: d(5,8), title: 'Perjumpaan Badan Beruniform Kumpulan A (10)', type:'uniform', group:'A', time:'7.45 - 9.45 pagi' },
+  { date: d(8,8), title: 'Perjumpaan Badan Beruniform Kumpulan B (11 & 12)', type:'uniform', group:'B', time:'7.30 pagi - 12.00 t/hari' },
+  { date: d(12,8), title: 'Perjumpaan Badan Beruniform Kumpulan A (11)', type:'uniform', group:'A', time:'7.45 - 9.45 pagi' },
+  { date: d(19,8), title: 'Perjumpaan Badan Beruniform Kumpulan A (12)', type:'uniform', group:'A', time:'7.45 - 9.45 pagi' },
+
+  // ===== SUKAN DAN PERMAINAN =====
+  { date: d(3,2), title: 'Perjumpaan Sukan & Permainan Kumpulan A (1)', type:'permainan', group:'A', time:'7.45 - 9.45 pagi' },
+  { date: d(5,2), title: 'Perjumpaan Sukan & Permainan Kumpulan B (1)', type:'permainan', group:'B', time:'7.45 - 9.45 pagi' },
+  { date: d(16,6), title: 'Perjumpaan Sukan & Permainan Kumpulan A (2)', type:'permainan', group:'A', time:'7.45 - 9.45 pagi' },
+  { date: d(18,6), title: 'Perjumpaan Sukan & Permainan Kumpulan B (2)', type:'permainan', group:'B', time:'7.45 - 9.45 pagi' },
+  { date: d(30,6), title: 'Perjumpaan Sukan & Permainan Kumpulan A (3)', type:'permainan', group:'A', time:'7.45 - 9.45 pagi' },
+  { date: d(2,7), title: 'Perjumpaan Sukan & Permainan Kumpulan B (3)', type:'permainan', group:'B', time:'7.45 - 9.45 pagi' },
+  { date: d(14,7), title: 'Perjumpaan Sukan & Permainan Kumpulan A (4)', type:'permainan', group:'A', time:'7.45 - 9.45 pagi' },
+  { date: d(16,7), title: 'Perjumpaan Sukan & Permainan Kumpulan B (4)', type:'permainan', group:'B', time:'7.45 - 9.45 pagi' },
+  { date: d(28,7), title: 'Perjumpaan Sukan & Permainan Kumpulan A (5)', type:'permainan', group:'A', time:'7.45 - 9.45 pagi' },
+  { date: d(30,7), title: 'Perjumpaan Sukan & Permainan Kumpulan B (5)', type:'permainan', group:'B', time:'7.45 - 9.45 pagi' },
+  { date: d(11,8), title: 'Perjumpaan Sukan & Permainan Kumpulan A (6)', type:'permainan', group:'A', time:'7.45 - 9.45 pagi' },
+  { date: d(13,8), title: 'Perjumpaan Sukan & Permainan Kumpulan B (6)', type:'permainan', group:'B', time:'7.45 - 9.45 pagi' },
+  { date: d(18,8), title: 'Perjumpaan Sukan & Permainan Kumpulan A (7)', type:'permainan', group:'A', time:'7.45 - 9.45 pagi' },
+  { date: d(20,8), title: 'Perjumpaan Sukan & Permainan Kumpulan B (7)', type:'permainan', group:'B', time:'7.45 - 9.45 pagi' },
+  { date: d(8,9), title: 'Perjumpaan Sukan & Permainan Kumpulan A (8)', type:'permainan', group:'A', time:'7.45 - 9.45 pagi' },
+  { date: d(10,9), title: 'Perjumpaan Sukan & Permainan Kumpulan B (8)', type:'permainan', group:'B', time:'7.45 - 9.45 pagi' },
+  { date: d(15,9), title: 'Perjumpaan Sukan & Permainan Kumpulan A (9)', type:'permainan', group:'A', time:'7.45 - 9.45 pagi' },
+  { date: d(17,9), title: 'Perjumpaan Sukan & Permainan Kumpulan B (9)', type:'permainan', group:'B', time:'7.45 - 9.45 pagi' },
+  { date: d(22,9), title: 'Perjumpaan Sukan & Permainan Kumpulan A (10)', type:'permainan', group:'A', time:'7.45 - 9.45 pagi' },
+  { date: d(24,9), title: 'Perjumpaan Sukan & Permainan Kumpulan B (10)', type:'permainan', group:'B', time:'7.45 - 9.45 pagi' },
+  { date: d(6,10), title: 'Perjumpaan Sukan & Permainan Kumpulan A (11)', type:'permainan', group:'A', time:'7.45 - 9.45 pagi' },
+  { date: d(8,10), title: 'Perjumpaan Sukan & Permainan Kumpulan B (11)', type:'permainan', group:'B', time:'7.45 - 9.45 pagi' },
+  { date: d(13,10), title: 'Perjumpaan Sukan & Permainan Kumpulan A (12)', type:'permainan', group:'A', time:'7.45 - 9.45 pagi' },
+  { date: d(15,10), title: 'Perjumpaan Sukan & Permainan Kumpulan B (12)', type:'permainan', group:'B', time:'7.45 - 9.45 pagi' },
+
+  // ===== AKTIVITI / PROGRAM =====
+  { date: d(24,1), title: 'Larian Twelveans', type:'program', group:'ALL', time:'Sabtu' },
+  { date: d(3,2), title: 'Seminar Kepimpinan Muda', type:'program', group:'ALL', time:'Selasa' },
+  { date: d(15,4), title: 'Sukantara (Hari 1)', type:'program', group:'ALL', time:'Rabu' },
+  { date: d(16,4), title: 'Sukantara (Hari 2)', type:'program', group:'ALL', time:'Khamis' },
+  { date: d(21,4), title: 'Saringan Sukan (Hari 1)', type:'program', group:'ALL', time:'Selasa' },
+  { date: d(22,4), title: 'Saringan Sukan (Hari 2)', type:'program', group:'ALL', time:'Rabu' },
+  { date: d(23,4), title: 'Raptai Sukan', type:'program', group:'ALL', time:'Khamis' },
+  { date: d(17,4), title: 'Jamuan Kongsi Raya', type:'program', group:'ALL', time:'Jumaat' },
+  { date: d(25,4), title: 'Kejohanan Sukan Tahunan Twelveans', type:'program', group:'ALL', time:'Sabtu' },
+  { date: d(9,5), title: 'LADAP Kokurikulum', type:'program', group:'ALL', time:'Sabtu' },
+  { date: d(26,6), title: 'Perkhemahan Perdana Badan Beruniform (Hari 1)', type:'program', group:'ALL', time:'Jumaat' },
+  { date: d(27,6), title: 'Perkhemahan Perdana Badan Beruniform (Hari 2)', type:'program', group:'ALL', time:'Sabtu' },
+  { date: d(28,6), title: 'Perkhemahan Perdana Badan Beruniform (Hari 3)', type:'program', group:'ALL', time:'Ahad' },
+  { date: d(15,7), title: 'Pertandingan Kawad Kaki Badan Beruniform', type:'program', group:'ALL', time:'Rabu' },
+  { date: d(3,8), title: 'Perasmian Bulan Kebangsaan', type:'program', group:'ALL', time:'Isnin' },
+  { date: d(28,8), title: 'Majlis Penutup Bulan Kebangsaan & Hari Malaysia', type:'program', group:'ALL', time:'Jumaat' },
+  { date: d(10,9), title: 'Karnival Koperasi & Keusahawanan Sekolah', type:'program', group:'ALL', time:'Khamis' },
+  { date: d(26,9), title: 'Majlis Anugerah Kualiti', type:'program', group:'ALL', time:'Sabtu' },
+  { date: d(10,11), title: 'Program 1 Murid 1 Sukan (Hari 1)', type:'program', group:'ALL', time:'Selasa' },
+  { date: d(11,11), title: 'Program 1 Murid 1 Sukan (Hari 2)', type:'program', group:'ALL', time:'Rabu' },
+  { date: d(12,11), title: 'Program 1 Murid 1 Sukan (Hari 3)', type:'program', group:'ALL', time:'Khamis' },
+  { date: d(13,11), title: 'Program 1 Murid 1 Sukan (Hari 4)', type:'program', group:'ALL', time:'Jumaat' },
+];
+
+// =========== STATE ===========
+let currentView = 'calendar';
+let currentMonth = new Date().getMonth(); // 0-indexed
+let currentYear = 2026;
+// Start at current month if 2026, otherwise Jan
+if (new Date().getFullYear() === 2026) {
+  currentMonth = new Date().getMonth();
+} else {
+  currentMonth = 0;
+}
+
+// =========== LOGIC ===========
+function getSelectedGroup(type) {
+  if (type === 'sukan') {
+    const val = document.getElementById('sel-sukan').value;
+    if (!val) return null;
+    return sukanKumpA.includes(val) ? 'A' : 'B';
+  }
+  if (type === 'uniform') {
+    const val = document.getElementById('sel-uniform').value;
+    if (!val) return null;
+    return uniformKumpA.includes(val) ? 'A' : 'B';
+  }
+  if (type === 'kelab') {
+    const val = document.getElementById('sel-kelab').value;
+    if (!val) return null;
+    return kelabKumpA.includes(val) ? 'A' : 'B';
+  }
+  if (type === 'permainan') {
+    const val = document.getElementById('sel-permainan').value;
+    if (!val) return null;
+    return permainanKumpA.includes(val) ? 'A' : 'B';
+  }
+  return null;
+}
+
+function getFilteredEvents() {
+  const sukanGroup = getSelectedGroup('sukan');
+  const uniformGroup = getSelectedGroup('uniform');
+  const kelabGroup = getSelectedGroup('kelab');
+  const permainanGroup = getSelectedGroup('permainan');
+
+  return allEvents.filter(ev => {
+    if (ev.group === 'ALL') return true;
+    if (ev.type === 'sukan') return sukanGroup && ev.group === sukanGroup;
+    if (ev.type === 'uniform') return uniformGroup && ev.group === uniformGroup;
+    if (ev.type === 'kelab') return kelabGroup && ev.group === kelabGroup;
+    if (ev.type === 'permainan') return permainanGroup && ev.group === permainanGroup;
+    return false;
+  });
+}
+
+function getEventsForMonth(month, year) {
+  const events = getFilteredEvents();
+  const prefix = `${year}-${String(month + 1).padStart(2, '0')}-`;
+  return events.filter(e => e.date.startsWith(prefix))
+    .sort((a, b) => a.date.localeCompare(b.date));
+}
+
+function getEventsForDate(dateStr) {
+  return getFilteredEvents().filter(e => e.date === dateStr);
+}
+
+function updateInfoBox() {
+  const box = document.getElementById('info-box');
+  const sukan = document.getElementById('sel-sukan');
+  const uniform = document.getElementById('sel-uniform');
+  const kelab = document.getElementById('sel-kelab');
+  const permainan = document.getElementById('sel-permainan');
+
+  if (!sukan.value && !uniform.value && !kelab.value && !permainan.value) {
+    box.style.display = 'none';
+    return;
+  }
+
+  let html = '<strong>Ringkasan Jadual Anak Anda:</strong>';
+  if (sukan.value) {
+    const grp = getSelectedGroup('sukan');
+    const days = grp === 'A' ? 'Isnin & Rabu' : 'Selasa & Khamis';
+    html += `Rumah Sukan: ${sukan.options[sukan.selectedIndex].text} - Latihan pada hari <b>${days}</b> (7.45-9.15 pagi)<br>`;
+  }
+  if (kelab.value) {
+    const grp = getSelectedGroup('kelab');
+    const day = grp === 'A' ? 'Selasa' : 'Khamis';
+    html += `Kelab Persatuan: ${kelab.options[kelab.selectedIndex].text} - Perjumpaan hari <b>${day}</b> (7.45-9.45 pagi)<br>`;
+  }
+  if (permainan.value) {
+    const grp = getSelectedGroup('permainan');
+    const day = grp === 'A' ? 'Selasa' : 'Khamis';
+    html += `Kelab Permainan: ${permainan.options[permainan.selectedIndex].text} - Perjumpaan hari <b>${day}</b> (7.45-9.45 pagi)<br>`;
+  }
+  if (uniform.value) {
+    const grp = getSelectedGroup('uniform');
+    const day = grp === 'A' ? 'Rabu (7.45-9.45 pagi)' : 'Sabtu (7.30 pagi-12.00 t/hari)';
+    html += `Badan Beruniform: ${uniform.options[uniform.selectedIndex].text} - Perjumpaan hari <b>${day}</b>`;
+  }
+  box.innerHTML = html;
+  box.style.display = 'block';
+}
+
+// =========== RENDER ===========
+function renderCalendar() {
+  const grid = document.getElementById('cal-grid');
+  const label = document.getElementById('month-label');
+  label.textContent = `${MONTH_NAMES[currentMonth]} ${currentYear}`;
+
+  const firstDay = new Date(currentYear, currentMonth, 1);
+  let startDay = firstDay.getDay(); // 0=Sun
+  // Convert to Mon=0: Mon=0, Tue=1, ... Sun=6
+  startDay = (startDay + 6) % 7;
+
+  const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+  const today = new Date();
+  const todayStr = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
+
+  let html = '';
+  // Empty cells before first day
+  for (let i = 0; i < startDay; i++) {
+    html += '<div class="cal-day empty"></div>';
+  }
+
+  for (let day = 1; day <= daysInMonth; day++) {
+    const dateStr = d(day, currentMonth + 1, currentYear);
+    const events = getEventsForDate(dateStr);
+    const isToday = dateStr === todayStr;
+    const hasEvent = events.length > 0;
+
+    let cls = 'cal-day';
+    if (hasEvent) cls += ' has-event';
+    if (isToday) cls += ' today';
+
+    let extra = '';
+    if (hasEvent) {
+      const types = [...new Set(events.map(e => e.type))];
+      let dots = '<div class="dots">';
+      types.forEach(t => { dots += `<div class="dot dot-${t}"></div>`; });
+      dots += '</div>';
+
+      let labels = '<div class="cal-labels">';
+      types.forEach(t => {
+        const name = getSelectedName(t);
+        const label = name || typeLabel(t);
+        labels += `<div class="cal-label cal-label-${t}">${label}</div>`;
+      });
+      labels += '</div>';
+      extra = dots + labels;
+    }
+
+    html += `<div class="${cls}" ${hasEvent ? `onclick="showDayModal('${dateStr}')"` : ''}>
+      ${day}${extra}
+    </div>`;
+  }
+
+  grid.innerHTML = html;
+
+  // Nav button state
+  document.getElementById('prev-month').disabled = (currentMonth === 0 && currentYear === 2026);
+  document.getElementById('next-month').disabled = (currentMonth === 11 && currentYear === 2026);
+}
+
+function renderList() {
+  const list = document.getElementById('event-list');
+  const label = document.getElementById('month-label-list');
+  label.textContent = `${MONTH_NAMES[currentMonth]} ${currentYear}`;
+
+  const events = getEventsForMonth(currentMonth, currentYear);
+
+  document.getElementById('prev-month-list').disabled = (currentMonth === 0 && currentYear === 2026);
+  document.getElementById('next-month-list').disabled = (currentMonth === 11 && currentYear === 2026);
+
+  if (events.length === 0) {
+    list.innerHTML = '<div class="no-events">Tiada aktiviti kokurikulum pada bulan ini.</div>';
+    return;
+  }
+
+  list.innerHTML = events.map(ev => {
+    const parts = ev.date.split('-');
+    const dayNum = parseInt(parts[2]);
+    const dateObj = new Date(parseInt(parts[0]), parseInt(parts[1])-1, dayNum);
+    const dayName = DAY_NAMES[dateObj.getDay()];
+
+    const selName = getSelectedName(ev.type);
+    const selNameHtml = selName ? `<span class="selected-name">${selName}</span>` : '';
+
+    return `<li class="event-item">
+      <div class="event-date-box">
+        <div class="day-num">${dayNum}</div>
+        <div class="day-name">${dayName}</div>
+      </div>
+      <div class="event-details">
+        <div class="event-title">${ev.title}</div>
+        <div class="event-time">${ev.time}</div>
+        <span class="badge badge-${ev.type}">${typeLabel(ev.type)}</span>
+        ${selNameHtml}
+      </div>
+    </li>`;
+  }).join('');
+}
+
+function typeLabel(type) {
+  const map = { kelab:'Kelab Persatuan', permainan:'Sukan & Permainan', uniform:'Beruniform', sukan:'Rumah Sukan', program:'Program' };
+  return map[type] || type;
+}
+
+function getSelectedName(type) {
+  const selMap = { sukan:'sel-sukan', uniform:'sel-uniform', kelab:'sel-kelab', permainan:'sel-permainan' };
+  const selId = selMap[type];
+  if (!selId) return '';
+  const sel = document.getElementById(selId);
+  if (!sel || !sel.value) return '';
+  return sel.options[sel.selectedIndex].text;
+}
+
+function render() {
+  updateInfoBox();
+  renderCalendar();
+  renderList();
+  saveSelections();
+}
+
+function setView(view) {
+  currentView = view;
+  document.getElementById('btn-calendar').classList.toggle('active', view === 'calendar');
+  document.getElementById('btn-list').classList.toggle('active', view === 'list');
+  document.getElementById('calendar-view').style.display = view === 'calendar' ? 'block' : 'none';
+  document.getElementById('list-view').style.display = view === 'list' ? 'block' : 'none';
+}
+
+function changeMonth(delta) {
+  currentMonth += delta;
+  if (currentMonth < 0) { currentMonth = 11; currentYear--; }
+  if (currentMonth > 11) { currentMonth = 0; currentYear++; }
+  // Clamp to 2026
+  if (currentYear < 2026) { currentYear = 2026; currentMonth = 0; }
+  if (currentYear > 2026) { currentYear = 2026; currentMonth = 11; }
+  render();
+}
+
+function showDayModal(dateStr) {
+  const events = getEventsForDate(dateStr);
+  if (!events.length) return;
+
+  const parts = dateStr.split('-');
+  const dayNum = parseInt(parts[2]);
+  const monthIdx = parseInt(parts[1]) - 1;
+  const dateObj = new Date(2026, monthIdx, dayNum);
+  const dayName = DAY_NAMES[dateObj.getDay()];
+
+  document.getElementById('modal-title').textContent = `${dayNum} ${MONTH_NAMES[monthIdx]} 2026 (${dayName})`;
+
+  document.getElementById('modal-events').innerHTML = events.map(ev => {
+    const selName = getSelectedName(ev.type);
+    const selNameHtml = selName ? `<span class="selected-name">${selName}</span>` : '';
+    return `<div class="event-item">
+      <div class="event-details">
+        <div class="event-title">${ev.title}</div>
+        <div class="event-time">${ev.time}</div>
+        <span class="badge badge-${ev.type}">${typeLabel(ev.type)}</span>
+        ${selNameHtml}
+      </div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('day-modal-overlay').classList.add('show');
+}
+
+function closeModal(e) {
+  if (e.target === document.getElementById('day-modal-overlay')) {
+    e.target.classList.remove('show');
+  }
+}
+
+// Persist selections in localStorage
+function saveSelections() {
+  const data = {
+    sukan: document.getElementById('sel-sukan').value,
+    uniform: document.getElementById('sel-uniform').value,
+    kelab: document.getElementById('sel-kelab').value,
+    permainan: document.getElementById('sel-permainan').value,
+  };
+  try { localStorage.setItem('koku-usj12', JSON.stringify(data)); } catch(e) {}
+}
+
+function loadSelections() {
+  try {
+    const data = JSON.parse(localStorage.getItem('koku-usj12'));
+    if (data) {
+      if (data.sukan) document.getElementById('sel-sukan').value = data.sukan;
+      if (data.uniform) document.getElementById('sel-uniform').value = data.uniform;
+      if (data.kelab) document.getElementById('sel-kelab').value = data.kelab;
+      if (data.permainan) document.getElementById('sel-permainan').value = data.permainan;
+    }
+  } catch(e) {}
+}
+
+// =========== INIT ===========
+document.querySelectorAll('select').forEach(sel => sel.addEventListener('change', render));
+loadSelections();
+render();
+</script>
+</body>
+</html>
